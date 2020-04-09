@@ -11,7 +11,6 @@ function! s:highlight_colors()
     endfor
 endfunction
 
-
 augroup highlight_colors
     autocmd!
     autocmd ColorScheme * call s:highlight_colors()
@@ -40,4 +39,3 @@ function! ColorPicker(...)
 endfunction
 
 nnoremap yc :call ColorPicker(SynGroup()[-1])<cr>
-
