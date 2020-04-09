@@ -28,9 +28,9 @@ function! ColorPicker(...)
     if a:0 > 0
         let group = a:1
     endif
-    exe "botright 24 vsplit" s:color_file
+    exe "botright 27 vsplit" s:color_file
     setlocal filetype=colors number nospell buftype=nofile bufhidden=hide
-          \ nobuflisted nowrap nomodifiable  nocursorline nofoldenable
+          \ nobuflisted nowrap nomodifiable  nocursorline nofoldenable sidescrolloff=0
     exe "setlocal statusline=>\\ Group:\\ ".group
     " We want local `group` but remote `<cword>`, hence nested `exe`
     exe "nnoremap <buffer> <cr> :exe \"highlight ".group." ctermfg=\".expand(\"<cword>\")<cr>"
