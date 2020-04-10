@@ -89,6 +89,11 @@ function! macaw#increment_color(number, group, fg_or_bg) abort
     call search('\<'.s:current_color.'\>', "w")
 endfunction
 
+function! macaw#highlight(group, fg_or_bg, color) abort
+    let s:current_color = a:color
+    exe "highlight ".a:group." cterm".a:fg_or_bg."=".a:color
+endfunction
+
 function! Macaw_picker(syn_id, fg_or_bg) abort
     let [s:syn_id, s:fg_or_bg] = [a:syn_id, a:fg_or_bg]
 
@@ -124,7 +129,8 @@ function! Macaw_picker(syn_id, fg_or_bg) abort
         let s:plugin_buffer = bufnr()
 
         setlocal filetype=colors nonumber nospell buftype=nofile bufhidden=hide
-              \ nobuflisted nowrap nomodifiable cursorline cursorcolumn nofoldenable sidescrolloff=0
+              \ nobuflisted nowrap nomodifiable cursorline cursorcolumn nofoldenable
+              \ sidescrolloff=0 noequalalways mouse=n
     else
         exe plugin_window . 'wincmd w'
     endif
@@ -140,6 +146,7 @@ function! Macaw_picker(syn_id, fg_or_bg) abort
     exe "nnoremap <silent> <buffer> <c-a> :<c-u>call macaw#increment_color(1, \"".current_group."\", \"".a:fg_or_bg."\")<cr>"
     exe "nnoremap <silent> <buffer> <c-x> :<c-u>call macaw#increment_color(-1, \"".current_group."\", \"".a:fg_or_bg."\")<cr>"
     nnoremap <buffer> <c-t> :call Macaw_transpose()<cr>
+    nmap <2-leftmouse> <cr>
     nnoremap <buffer> q :q!<cr>
 endfunction
 
