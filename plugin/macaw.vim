@@ -82,10 +82,11 @@ function! Macaw_transpose() abort
 endfunction
 
 function! macaw#increment_color(number, group, fg_or_bg) abort
+    echom [s:current_color, type(s:current_color)]
     let increment = v:count1 * a:number
     let s:current_color = (s:current_color + increment) % 256
     exe "highlight ".a:group." cterm".a:fg_or_bg."=".s:current_color
-    call search(s:current_color)
+    call search('\<'.s:current_color.'\>', "w")
 endfunction
 
 function! Macaw_picker(syn_id, fg_or_bg) abort
@@ -132,7 +133,7 @@ function! Macaw_picker(syn_id, fg_or_bg) abort
         let background = synIDattr(hlID("Normal"), 'bg')
         let s:current_color = a:fg_or_bg == "fg" ? 255 : background
     endif
-    call search(s:current_color)
+    call search('\<'.s:current_color.'\>', "w")
 
     exe "setlocal statusline=>\\ Group:\\ ".current_group
     exe "nnoremap <silent> <buffer> <cr> :exe \"highlight ".current_group." cterm".a:fg_or_bg."=\".expand(\"<cword>\")<cr>"
