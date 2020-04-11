@@ -23,7 +23,7 @@
 let s:path = expand("<sfile>:p:h")
 
 let s:default_orientation = 'vertical'
-let s:default_command_vertical = 'vert botright 24 split'
+let s:default_command_vertical = 'vert botright 23 split'
 let s:default_command_horizontal = 'topleft 6 split'
 
 " Hexadecimal to decimal
@@ -52,68 +52,49 @@ function! s:highlight_colors()
         exe "highlight vimHiNmbrFg".i." ctermfg=".i
         exe "highlight vimHiNmbrBg".i." ctermfg=black ctermbg=".i
     endfor
-
     for i in range(1, 255)
         exe "highlight Color".i." ctermbg=".i
     endfor
 endfunction
 
-function! SynGroup()
-    let effective_id = synIDtrans(synID(line('.'), col('.'), 1))
-    return [synIDattr(effective_id, 'fg'),
-                \ synIDattr(effective_id, 'bg'),
-                \ synIDattr(effective_id, 'name')]
-endfun
-
-let s:plugin_buffer = -1
-let s:transposed = 0
-let s:syn_id = ""
-let s:fg_or_bg = ""
-let s:current_color = ""
+let s:state = {
+            \ 'buf_nr': -1,
+            \ 'transposed': 0,
+            \ 'fg_or_bg': "fg",
+            \ 'syn_id': "",
+            \ 'color_nr': ""
+            \ }
 
 function! Macaw_transpose() abort
-    if bufwinnr(s:plugin_buffer) == -1
+    if bufwinnr(s:state['buf_nr']) == -1
         return
     endif
-
-    exe 'bwipeout' s:plugin_buffer
-    let s:transposed = !s:transposed
+    exe 'bwipeout' s:state['buf_nr']
+    let s:state['transposed'] = !s:state['transposed']
     call Macaw_picker(s:syn_id, s:fg_or_bg)
 endfunction
 
-function! macaw#increment_color(number, group, fg_or_bg) abort
-    echom [s:current_color, type(s:current_color)]
+function! macaw#increment_color(number) abort
+    let color_group = synIDattr(s:state['syn_eid'], 'name')
     let increment = v:count1 * a:number
-    let s:current_color = (s:current_color + increment) % 256
-    exe "highlight ".a:group." cterm".a:fg_or_bg."=".s:current_color
-    call search('\<'.s:current_color.'\>', "w")
+    let newcolor = (s:state['color_nr'] + increment) % 256
+    exe "highlight ".color_group." cterm".s:state['fg_or_bg']."=".newcolor
+    call search('\<'.newcolor.'\>', "w")
+    let s:state['color_nr'] = newcolor
 endfunction
 
-function! macaw#highlight(group, fg_or_bg, color) abort
-    let s:current_color = a:color
-    exe "highlight ".a:group." cterm".a:fg_or_bg."=".a:color
-endfunction
-
-function! Macaw_picker(syn_id, fg_or_bg) abort
-    let [s:syn_id, s:fg_or_bg] = [a:syn_id, a:fg_or_bg]
-
-    let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
-    let effective_id = synIDtrans(syn_id)
-    let s:current_color = synIDattr(effective_id, a:fg_or_bg)
-    let current_group = synIDattr(effective_id, 'name')
-    echom [effective_id, a:fg_or_bg, s:current_color, current_group]
-
-    let plugin_opened = buffer_exists(s:plugin_buffer)
-    let plugin_window = bufwinnr(s:plugin_buffer)
+function! Macaw_open() abort
+    let plugin_opened = buffer_exists(s:state['buf_nr'])
+    let plugin_window = bufwinnr(s:state['buf_nr'])
     let plugin_visible = plugin_window != -1
 
     if plugin_opened && !plugin_visible
-        exe 'bwipeout' s:plugin_buffer
+        exe 'bwipeout' s:state['buf_nr']
     endif
 
     if !plugin_visible
         let orientation = get(g:, 'macaw_orientation', s:default_orientation)
-        if s:transposed
+        if s:state['transposed']
             let orientation = (orientation == 'vertical' ? 'horizontal' : 'vertical')
         endif
 
@@ -126,7 +107,7 @@ function! Macaw_picker(syn_id, fg_or_bg) abort
         endif
 
         exe split_command color_file
-        let s:plugin_buffer = bufnr()
+        let s:state['buf_nr'] = bufnr()
 
         setlocal filetype=colors nonumber nospell buftype=nofile bufhidden=hide
               \ nobuflisted nowrap nomodifiable cursorline cursorcolumn nofoldenable
@@ -134,25 +115,61 @@ function! Macaw_picker(syn_id, fg_or_bg) abort
     else
         exe plugin_window . 'wincmd w'
     endif
+endfunction
 
-    if s:current_color == ""
+function! Macaw_update() abort
+
+    call search('\<'.s:state['color_nr'].'\>', "w")
+endfunction
+
+function! Macaw_set_color_at_cursor() abort
+    let color_group = synIDattr(s:state['syn_eid'], 'name')
+    let cursor_syn_eid = synIDtrans(synID(line('.'), col('.'), 1))
+    let cursor_color = synIDattr(cursor_syn_eid, 'bg')
+    exe "highlight ".color_group." cterm".s:state['fg_or_bg']."=".cursor_color
+    let s:state['color_nr'] = cursor_color
+endfunction
+
+function! macaw#toggle_fg_bg()
+    let s:state['fg_or_bg'] = s:state['fg_or_bg'] == 'fg' ? 'bg' : 'fg'
+    call Macaw_picker(s:state['syn_id'])
+endfunction
+
+function! Macaw_picker(syn_id, ...) abort
+    call Macaw_open()
+
+    " Update state
+    let fg_or_bg = get(a:, 1, s:state['fg_or_bg'])
+    let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
+    let syn_eid = synIDtrans(syn_id)
+
+    let color_nr = synIDattr(syn_eid, fg_or_bg)
+    if color_nr == ""
         let background = synIDattr(hlID("Normal"), 'bg')
-        let s:current_color = a:fg_or_bg == "fg" ? 255 : background
+        let color_nr = fg_or_bg == "fg" ? 255 : background
     endif
-    call search('\<'.s:current_color.'\>', "w")
 
-    exe "setlocal statusline=>\\ Group:\\ ".current_group
-    exe "nnoremap <silent> <buffer> <cr> :exe \"highlight ".current_group." cterm".a:fg_or_bg."=\".expand(\"<cword>\")<cr>"
-    exe "nnoremap <silent> <buffer> <c-a> :<c-u>call macaw#increment_color(1, \"".current_group."\", \"".a:fg_or_bg."\")<cr>"
-    exe "nnoremap <silent> <buffer> <c-x> :<c-u>call macaw#increment_color(-1, \"".current_group."\", \"".a:fg_or_bg."\")<cr>"
-    nnoremap <buffer> <c-t> :call Macaw_transpose()<cr>
-    nmap <2-leftmouse> <cr>
+    call extend(s:state, {
+                \ 'syn_id': a:syn_id,
+                \ 'syn_eid': syn_eid,
+                \ 'color_nr': color_nr,
+                \ 'fg_or_bg': fg_or_bg})
+
+    call search('\<'.color_nr.'\>', "w")
+    let color_group = synIDattr(s:state['syn_eid'], 'name')
+    exe 'setlocal statusline=>\ '.color_group.'\ -\ '.fg_or_bg
+
+    nnoremap <silent> <buffer> <cr> :<c-u> call Macaw_set_color_at_cursor()<cr>
+    nmap <buffer> <2-leftmouse> <cr>
+    nnoremap <silent> <buffer> <c-a> :<c-u>call macaw#increment_color(1)<cr>
+    nnoremap <silent> <buffer> <c-x> :<c-u>call macaw#increment_color(-1)<cr>
+    nnoremap <silent> <buffer> <c-t> :call Macaw_transpose()<cr>
+    nnoremap <silent> <buffer> B :<c-u>call macaw#toggle_fg_bg()<cr>
     nnoremap <buffer> q :q!<cr>
 endfunction
 
 inoremap <expr> <F10> Interpolate(trim(system('grabc')))
-nnoremap ycf :call Macaw_picker(synID(line('.'), col('.'), 1), 'fg')<cr>
-nnoremap ycb :call Macaw_picker(synID(line('.'), col('.'), 1), 'bg')<cr>
+nnoremap <silent> yc :call Macaw_picker(synID(line('.'), col('.'), 1))<cr>
 
 augroup highlight_colors
     autocmd!
