@@ -127,7 +127,7 @@ endfunction
 function! s:highlight(color, ...)
     let color_group = synIDattr(s:syn_eid(), 'name')
     let command = "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
-    exe command | let @c = command
+    exe command | let @h = command
     if get(a:, 1, 1)
         call search('\<'.a:color.'\>', "w")
     endif
@@ -186,7 +186,7 @@ function! s:open()
         echohl NONE
         echon "' to show mappings. The latest highlight command will be copied to register '"
         echohl Special
-        echon "c"
+        echon "h"
         echohl NONE
         echon "'. Happy hacking!"
         let s:state['help_shown'] = 1
@@ -206,6 +206,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> <left> :<c-u>call macaw#cycle_rgb(-1)<cr>
     nnoremap <silent> <buffer> g? :call macaw#help()<cr>
     nnoremap <silent> <buffer> q :q!<cr>
+    nnoremap <silent> <buffer> ! :call macaw#external()<cr>
 endfunction
 
 function! s:echo_rgb()
@@ -328,3 +329,5 @@ function! macaw#interpolate(color)
     endfor
     return argmin
 endfunction
+
+ (trim(system('grabc')))

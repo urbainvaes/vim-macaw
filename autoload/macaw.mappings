@@ -3,7 +3,7 @@
 <c-a>: Increment the color/256
 <c-x>: Decrement the color/256
 
-B: Toggle foregroup/background
+B: Toggle foreground/background
 T: Toggle vertical/horizontal
 
 <Right>: Cycle r->g->b->r
@@ -12,3 +12,6 @@ T: Toggle vertical/horizontal
 <Up>: Increment value of r/g/b
 
 q: Close the window
+
+Requires 'grabc'
+!: Approximate external color

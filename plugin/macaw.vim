@@ -45,5 +45,4 @@ call s:highlight_colors()
 " mapcheck() conflicts with Remembrall 'y' mapping
 if empty(maparg('yc', 'n'))
     nnoremap <silent> yc :call macaw#pick_color(synID(line('.'), col('.'), 1))<cr>
-    inoremap <expr> <F10> macaw#interpolate(trim(system('grabc')))
 endif
