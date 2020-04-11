@@ -30,18 +30,18 @@ syntax match vimHiCtermBg /\cctermbg=/ contained nextgroup=@vimHiNmbrBgCluster,v
 hi def link vimHiCtermFg vimHiCtermFgBg
 hi def link vimHiCtermBg vimHiCtermFgBg
 
-" Assemble syntax groups
-let syntax_groups_fg = "vimHiNmbrFg1"
-let syntax_groups_bg = "vimHiNmbrBg1"
+" Assemble syntax groups (z to appear at the end of completion list)
+let syntax_groups_fg = "zVimHiNmbrFg1"
+let syntax_groups_bg = "zVimHiNmbrBg1"
 for i in range(2, 255)
- let syntax_groups_fg = syntax_groups_fg.",vimHiNmbrFg".i
- let syntax_groups_bg = syntax_groups_bg.",vimHiNmbrBg".i
+ let syntax_groups_fg = syntax_groups_fg.",zVimHiNmbrFg".i
+ let syntax_groups_bg = syntax_groups_bg.",zVimHiNmbrBg".i
 endfor
 
 exe "syntax cluster vimHiNmbrFgCluster contains=".syntax_groups_fg
 exe "syntax cluster vimHiNmbrBgCluster contains=".syntax_groups_bg
 
 for i in range(1, 255)
-    exe "syntax match vimHiNmbrFg".i." /".i."/ contained"
-    exe "syntax match vimHiNmbrBg".i." /".i."/ contained"
+    exe "syntax match zVimHiNmbrFg".i." /".i."/ contained"
+    exe "syntax match zVimHiNmbrBg".i." /".i."/ contained"
 endfor

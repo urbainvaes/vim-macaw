@@ -27,11 +27,11 @@ let g:loaded_macaw = 1
 
 function! s:highlight_colors()
     for i in range(1, 255)
-        exe "highlight vimHiNmbrFg".i." ctermfg=".i
-        exe "highlight vimHiNmbrBg".i." ctermfg=black ctermbg=".i
+        exe "highlight zVimHiNmbrFg".i." ctermfg=".i
+        exe "highlight zVimHiNmbrBg".i." ctermfg=black ctermbg=".i
     endfor
     for i in range(1, 255)
-        exe "highlight Color".i." ctermbg=".i
+        exe "highlight zColor".i." ctermbg=".i
     endfor
 endfunction
 
