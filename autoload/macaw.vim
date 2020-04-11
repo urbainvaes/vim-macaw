@@ -279,9 +279,17 @@ function! macaw#toggle_fg_bg()
 endfunction
 
 function! macaw#help()
+    " Unclear why this fix works...
+    let winrestcmd = substitute(winrestcmd(), "|", "<bar>", "g")
+    if winwidth('.') < 34
+        vertical resize 34
+    endif
+    if winheight('.') < 12
+        resize 12
+    endif
     exe "edit ".s:path."/macaw.mappings"
     setfiletype mappings
-    nmap <silent> <buffer> q :buffer #<cr>:bdelete #<cr>
+    exe 'nmap <silent> <buffer> q :buffer #<cr>:bdelete #<cr>:'.winrestcmd.'<cr>'
     setlocal statusline=>\ Press\ 'q'\ to\ leave
 endfunction
 
