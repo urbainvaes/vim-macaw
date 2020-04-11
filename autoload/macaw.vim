@@ -20,8 +20,8 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 " THE SOFTWARE.
 
-let s:colors =
-        \{ 16:  '#000000',  17: '#00005f',  18: '#000087',  19: '#0000af',
+let s:colors = {
+        \  16:  '#000000',  17: '#00005f',  18: '#000087',  19: '#0000af',
         \  20:  '#0000d7',  21: '#0000ff',  22: '#005f00',  23: '#005f5f',
         \  24:  '#005f87',  25: '#005faf',  26: '#005fd7',  27: '#005fff',
         \  28:  '#008700',  29: '#00875f',  30: '#008787',  31: '#0087af',
@@ -173,13 +173,13 @@ function! s:open()
         let color_file = s:path."/256-lines.colors"
     endif
 
-    exe split_command color_file
+    silent exe split_command color_file
     let s:state['buf_nr'] = bufnr()
 
     setlocal filetype=colors
     call s:set_buf_options()
 
-    if !s:state['help_shown']
+    " if !s:state['help_shown']
         echon "Press '"
         echohl Special
         echon "g?"
@@ -190,7 +190,7 @@ function! s:open()
         echohl NONE
         echon "'. Happy hacking!"
         let s:state['help_shown'] = 1
-    endif
+    " endif
 endfunction
 
 function! s:map_keys()
@@ -210,13 +210,13 @@ function! s:map_keys()
 endfunction
 
 function! s:echo_rgb()
-    syntax keyword Macaw_output this_should_never_match
-    hi Macaw_ouput ctermfg=41
+    hi Macaw_output ctermfg=41
+    if s:color_nr() < 16 | return | endif
     let current_rgb = s:colors_rgb[s:color_nr()]
     echon '['
     for i in [0, 1, 2]
         if ['r', 'g', 'b'][i] == s:state['rgb']
-            echohl Macaw_ouput
+            echohl Macaw_output
             echon current_rgb[i]
             echohl NONE
         else
@@ -232,7 +232,7 @@ endfunction
 function! s:set_buf_options()
     setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted
                 \ nowrap nomodifiable nocursorline nocursorcolumn
-                \ nofoldenable sidescrolloff=0 noequalalways
+                \ nofoldenable sidescrolloff=0 noequalalways noswapfile
 endfunction
 
 function! s:transpose()
