@@ -117,11 +117,6 @@ function! Macaw_open() abort
     endif
 endfunction
 
-function! Macaw_update() abort
-
-    call search('\<'.s:state['color_nr'].'\>', "w")
-endfunction
-
 function! Macaw_set_color_at_cursor() abort
     let color_group = synIDattr(s:state['syn_eid'], 'name')
     let cursor_syn_eid = synIDtrans(synID(line('.'), col('.'), 1))
