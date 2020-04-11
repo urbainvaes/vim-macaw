@@ -284,8 +284,8 @@ function! macaw#help()
     if winwidth('.') < 34
         vertical resize 34
     endif
-    if winheight('.') < 12
-        resize 12
+    if winheight('.') < 14
+        resize 14
     endif
     exe "edit ".s:path."/macaw.mappings"
     setfiletype mappings
