@@ -126,7 +126,8 @@ endfunction
 
 function! s:highlight(color, ...)
     let color_group = synIDattr(s:syn_eid(), 'name')
-    exe "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
+    let command = "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
+    exe command | let @c = command
     if get(a:, 1, 1)
         call search('\<'.a:color.'\>', "w")
     endif
@@ -175,9 +176,8 @@ function! s:open()
     exe split_command color_file
     let s:state['buf_nr'] = bufnr()
 
-    setlocal filetype=colors nonumber nospell buftype=nofile bufhidden=hide
-          \ nobuflisted nowrap nomodifiable cursorline cursorcolumn nofoldenable
-          \ sidescrolloff=0 noequalalways mouse=n
+    setlocal filetype=colors 
+    call s:set_buf_options()
 
     if !s:state['help_shown']
         echom "Press 'g?' to show Macaw mappings"
@@ -218,6 +218,12 @@ function! s:echo_rgb()
         endif
     endfor
     echon ']'
+endfunction
+
+function! s:set_buf_options()
+    setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted 
+                \ nowrap nomodifiable nocursorline nocursorcolumn 
+                \ nofoldenable sidescrolloff=0 noequalalways
 endfunction
 
 " Public functions {{{1
@@ -290,7 +296,8 @@ function! macaw#help()
         resize 14
     endif
     exe "edit ".s:path."/macaw.mappings"
-    setfiletype mappings
+    setlocal filetype=mappings 
+    call s:set_buf_options()
     exe 'nmap <silent> <buffer> q :buffer #<cr>:bdelete #<cr>:'.winrestcmd.'<cr>'
     setlocal statusline=>\ Press\ 'q'\ to\ leave
 endfunction
