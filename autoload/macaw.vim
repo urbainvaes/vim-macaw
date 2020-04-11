@@ -292,7 +292,7 @@ endfunction
 
 function! macaw#toggle_fg_bg()
     let s:state['fg_or_bg'] = s:state['fg_or_bg'] == 'fg' ? 'bg' : 'fg'
-    call macaw#pick_color(s:state['syn_id'])
+    call s:redraw()
 endfunction
 
 function! macaw#help()
@@ -311,17 +311,6 @@ function! macaw#help()
     setlocal statusline=>\ Press\ 'q'\ to\ leave
 endfunction
 
-function! macaw#pick_color(syn_id, ...)
-    let s:state['fg_or_bg'] = get(a:, 1, s:state['fg_or_bg'])
-    let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
-    if syn_id == 0
-        call macaw#pick_color("Normal", "bg")
-        return
-    endif
-    let s:state['syn_id'] = syn_id
-    call s:redraw()
-endfunction
-
 function! macaw#approximate(color)
     let [r, g, b] = type(a:color) == 1 ? s:color_rgb(a:color) : a:color
     let [argmin, min] = [-1, 256*3]
@@ -338,4 +327,25 @@ endfunction
 function! macaw#external()
     let color = macaw#approximate(trim(system('grabc')))
     call s:highlight(color)
+endfunction
+
+function! macaw#pick_color(syn_id, fg_or_bg)
+    let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
+    if synIDattr(synIDtrans(syn_id), "name") == ""
+        call macaw#pick_color("Normal", "bg")
+        return
+    endif
+    let s:state['syn_id'] = syn_id
+    let s:state['fg_or_bg'] = a:fg_or_bg
+    call s:redraw()
+endfunction
+
+function! macaw#macaw(...)
+    if a:0 == 0 || a:1 == ""
+        let syn_id = synID(line('.'), col('.'), 1)
+    else
+        let syn_id = a:1
+    endif
+    let fg_or_bg = get(a:, 2, "fg")
+    call macaw#pick_color(syn_id, fg_or_bg)
 endfunction
