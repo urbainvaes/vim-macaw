@@ -194,19 +194,19 @@ function! s:open()
 endfunction
 
 function! s:map_keys()
-    nnoremap <silent> <buffer> <2-leftmouse> :<c-u>call macaw#set_color_at_cursor()<cr>
-    nnoremap <silent> <buffer> <cr> :<c-u>call macaw#set_color_at_cursor()<cr>
-    nnoremap <silent> <buffer> <c-a> :<c-u>call macaw#increment_color(1)<cr>
-    nnoremap <silent> <buffer> <c-x> :<c-u>call macaw#increment_color(-1)<cr>
-    nnoremap <silent> <buffer> T :call macaw#transpose()<cr>
-    nnoremap <silent> <buffer> B :<c-u>call macaw#toggle_fg_bg()<cr>
-    nnoremap <silent> <buffer> <up> :<c-u>call macaw#rgb(1)<cr>
-    nnoremap <silent> <buffer> <down> :<c-u>call macaw#rgb(-1)<cr>
-    nnoremap <silent> <buffer> <right> :<c-u>call macaw#cycle_rgb(1)<cr>
-    nnoremap <silent> <buffer> <left> :<c-u>call macaw#cycle_rgb(-1)<cr>
-    nnoremap <silent> <buffer> g? :call macaw#help()<cr>
+    nnoremap <silent> <buffer> <2-leftmouse> :<c-u>call <SID>set_color_at_cursor()<cr>
+    nnoremap <silent> <buffer> <cr> :<c-u>call <SID>set_color_at_cursor()<cr>
+    nnoremap <silent> <buffer> <c-a> :<c-u>call <SID>increment_color(1)<cr>
+    nnoremap <silent> <buffer> <c-x> :<c-u>call <SID>increment_color(-1)<cr>
+    nnoremap <silent> <buffer> <right> :<c-u>call <SID>cycle_rgb(1)<cr>
+    nnoremap <silent> <buffer> <left> :<c-u>call <SID>cycle_rgb(-1)<cr>
+    nnoremap <silent> <buffer> <up> :<c-u>call <SID>rgb(1)<cr>
+    nnoremap <silent> <buffer> <down> :<c-u>call <SID>rgb(-1)<cr>
+    nnoremap <silent> <buffer> T :<c-u> call <SID>transpose()<cr>
+    nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
+    nnoremap <silent> <buffer> ! :call <SID>external()<cr>
+    nnoremap <silent> <buffer> g? :call <SID>help()<cr>
     nnoremap <silent> <buffer> q :q!<cr>
-    nnoremap <silent> <buffer> ! :call macaw#external()<cr>
 endfunction
 
 function! s:echo_rgb()
@@ -235,8 +235,7 @@ function! s:set_buf_options()
                 \ nofoldenable sidescrolloff=0 noequalalways
 endfunction
 
-" PuBlic functions {{{1
-function! macaw#transpose()
+function! s:transpose()
     if bufwinnr(s:state['buf_nr']) == -1
         return
     endif
@@ -245,7 +244,7 @@ function! macaw#transpose()
     call s:redraw()
 endfunction
 
-function! macaw#cycle_rgb(dir)
+function! s:cycle_rgb(dir)
     let current = {'r': 0, 'g': 1, 'b': 2}[s:state['rgb']]
     let new_rgb = (current + a:dir) % 3
     let s:state['rgb'] = ['r', 'g', 'b'][new_rgb]
@@ -253,7 +252,7 @@ function! macaw#cycle_rgb(dir)
     call s:echo_rgb()
 endfunction
 
-function! macaw#rgb(increment)
+function! s:rgb(increment)
     let color_nr = s:color_nr()
     if color_nr < 16
         echom "This works only for colors ≥ 16..."
@@ -263,23 +262,23 @@ function! macaw#rgb(increment)
     let color = [s:x2d(color[1:2]), s:x2d(color[3:4]), s:x2d(color[5:6])]
     let index_rgb = {'r': 0, 'g': 1, 'b': 2}[s:state['rgb']]
     let increment = v:count1 * a:increment
-    while macaw#approximate(color) == color_nr
+    while s:approximate(color) == color_nr
         let newcolor = color[index_rgb] + increment
         if newcolor < 0 || newcolor > 255 | return | endif
         let color[index_rgb] = newcolor
     endwhile
-    call s:highlight(macaw#approximate(color))
+    call s:highlight(s:approximate(color))
     call s:echo_rgb()
 endfunction
 
-function! macaw#increment_color(number)
+function! s:increment_color(number)
     let increment = v:count1 * a:number
     let newcolor = (s:color_nr() + increment) % 256
     if newcolor < 0 | let newcolor += 256 | endif
     call s:highlight(newcolor)
 endfunction
 
-function! macaw#set_color_at_cursor()
+function! s:set_color_at_cursor()
     let color_group = synIDattr(s:syn_eid(), 'name')
     let cursor_syn_eid = synIDtrans(synID(line('.'), col('.'), 1))
     let cursor_color = synIDattr(cursor_syn_eid, 'bg')
@@ -290,12 +289,12 @@ function! macaw#set_color_at_cursor()
     call s:highlight(cursor_color, 0)
 endfunction
 
-function! macaw#toggle_fg_bg()
+function! s:toggle_fg_bg()
     let s:state['fg_or_bg'] = s:state['fg_or_bg'] == 'fg' ? 'bg' : 'fg'
     call s:redraw()
 endfunction
 
-function! macaw#help()
+function! s:help()
     " Unclear why this fix works...
     let winrestcmd = substitute(winrestcmd(), "|", "<bar>", "g")
     if winwidth('.') < 34
@@ -311,7 +310,7 @@ function! macaw#help()
     setlocal statusline=>\ Press\ 'q'\ to\ leave
 endfunction
 
-function! macaw#approximate(color)
+function! s:approximate(color)
     let [r, g, b] = type(a:color) == 1 ? s:color_rgb(a:color) : a:color
     let [argmin, min] = [-1, 256*3]
     for i in range(16, 255)
@@ -324,15 +323,15 @@ function! macaw#approximate(color)
     return argmin
 endfunction
 
-function! macaw#external()
-    let color = macaw#approximate(trim(system('grabc')))
+function! s:external()
+    let color = s:approximate(trim(system('grabc')))
     call s:highlight(color)
 endfunction
 
-function! macaw#pick_color(syn_id, fg_or_bg)
+function! s:pick_color(syn_id, fg_or_bg)
     let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
     if synIDattr(synIDtrans(syn_id), "name") == ""
-        call macaw#pick_color("Normal", "bg")
+        call s:pick_color("Normal", "bg")
         return
     endif
     let s:state['syn_id'] = syn_id
@@ -347,5 +346,5 @@ function! macaw#macaw(...)
         let syn_id = a:1
     endif
     let fg_or_bg = get(a:, 2, "fg")
-    call macaw#pick_color(syn_id, fg_or_bg)
+    call s:pick_color(syn_id, fg_or_bg)
 endfunction
