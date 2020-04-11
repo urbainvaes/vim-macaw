@@ -235,7 +235,7 @@ function! s:set_buf_options()
                 \ nofoldenable sidescrolloff=0 noequalalways
 endfunction
 
-" Public functions {{{1
+" PuBlic functions {{{1
 function! macaw#transpose()
     if bufwinnr(s:state['buf_nr']) == -1
         return
@@ -263,12 +263,12 @@ function! macaw#rgb(increment)
     let color = [s:x2d(color[1:2]), s:x2d(color[3:4]), s:x2d(color[5:6])]
     let index_rgb = {'r': 0, 'g': 1, 'b': 2}[s:state['rgb']]
     let increment = v:count1 * a:increment
-    while macaw#interpolate(color) == color_nr
+    while macaw#approximate(color) == color_nr
         let newcolor = color[index_rgb] + increment
         if newcolor < 0 || newcolor > 255 | return | endif
         let color[index_rgb] = newcolor
     endwhile
-    call s:highlight(macaw#interpolate(color))
+    call s:highlight(macaw#approximate(color))
     call s:echo_rgb()
 endfunction
 
@@ -317,7 +317,7 @@ function! macaw#pick_color(syn_id, ...)
     call s:redraw()
 endfunction
 
-function! macaw#interpolate(color)
+function! macaw#approximate(color)
     let [r, g, b] = type(a:color) == 1 ? s:color_rgb(a:color) : a:color
     let [argmin, min] = [-1, 256*3]
     for i in range(16, 255)
@@ -331,6 +331,6 @@ function! macaw#interpolate(color)
 endfunction
 
 function! macaw#external()
-    let color = macaw#interpolate(trim(system('grabc')))
+    let color = macaw#approximate(trim(system('grabc')))
     call s:highlight(color)
 endfunction
