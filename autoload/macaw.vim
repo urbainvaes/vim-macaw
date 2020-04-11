@@ -330,4 +330,7 @@ function! macaw#interpolate(color)
     return argmin
 endfunction
 
- (trim(system('grabc')))
+function! macaw#external()
+    let color = macaw#interpolate(trim(system('grabc')))
+    call s:highlight(color)
+endfunction
