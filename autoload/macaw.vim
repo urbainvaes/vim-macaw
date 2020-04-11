@@ -124,10 +124,12 @@ function! s:color_nr()
     return color_nr
 endfunction
 
-function! s:highlight(color)
+function! s:highlight(color, ...)
     let color_group = synIDattr(s:syn_eid(), 'name')
     exe "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
-    call search('\<'.a:color.'\>', "w")
+    if get(a:, 1, 1)
+        call search('\<'.a:color.'\>', "w")
+    endif
 endfunction
 
 function! s:redraw_status_line()
@@ -270,7 +272,7 @@ function! macaw#set_color_at_cursor()
         echom "Click on a color..."
         return
     endif
-    exe "highlight ".color_group." cterm".s:state['fg_or_bg']."=".cursor_color
+    call s:highlight(cursor_color, 0)
 endfunction
 
 function! macaw#toggle_fg_bg()
