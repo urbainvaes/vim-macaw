@@ -82,6 +82,15 @@ let s:colors =
         \  248: '#a8a8a8', 249: '#b2b2b2', 250: '#bcbcbc', 251: '#c6c6c6',
         \  252: '#d0d0d0', 253: '#dadada', 254: '#e4e4e4', 255: '#eeeeee' }
 
+function! s:x2d(hex)
+    return printf("%d", "0x".a:hex) + 0
+endfunction
+
+function! s:color_rgb(color)
+    let [r, g, b] = [a:color[1:2], a:color[3:4], a:color[5:6]]
+    return [s:x2d(r), s:x2d(g), s:x2d(b)]
+endfunction
+
 let s:colors_rgb = {}
 for c in keys(s:colors)
     let s:colors_rgb[c] = s:color_rgb(s:colors[c])
@@ -207,15 +216,6 @@ function! s:echo_rgb()
         endif
     endfor
     echon ']'
-endfunction
-
-function! s:x2d(hex)
-    return printf("%d", "0x".a:hex) + 0
-endfunction
-
-function! s:color_rgb(color)
-    let [r, g, b] = [a:color[1:2], a:color[3:4], a:color[5:6]]
-    return [s:x2d(r), s:x2d(g), s:x2d(b)]
 endfunction
 
 " Public functions {{{1
