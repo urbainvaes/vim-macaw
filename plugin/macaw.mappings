@@ -1,0 +1,11 @@
+q: Close the window
+<c-a>: Increment the color
+<c-x>: Decrement the color
+<cr>: Set to color under cursor
+<2-leftmouse>: Same as <cr>
+
+B: Toggle foregroup/background
+T: Toggle vertical/horizontal
+
+<Left>: Cycle r->g->b->r
+<Right>: Cycle b->g->r->b
