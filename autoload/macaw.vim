@@ -313,7 +313,12 @@ endfunction
 
 function! macaw#pick_color(syn_id, ...)
     let s:state['fg_or_bg'] = get(a:, 1, s:state['fg_or_bg'])
-    let s:state['syn_id'] = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
+    let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
+    if syn_id == 0
+        call macaw#pick_color("Normal", "bg")
+        return
+    endif
+    let s:state['syn_id'] = syn_id
     call s:redraw()
 endfunction
 
