@@ -79,7 +79,6 @@ function! s:redraw()
     call s:redraw_status_line()
 endfunction
 
-
 function! s:open()
     let orientation = get(g:, 'macaw_orientation', s:default_orientation)
     if s:state['transposed']
@@ -122,6 +121,26 @@ function! s:map_keys()
     nnoremap <silent> <buffer> q :q!<cr>
 endfunction
 
+function s:echo_rgb()
+    syntax keyword Macaw_output this_should_never_match
+    hi Macaw_ouput ctermfg=41
+    let current_rgb = s:colors_rgb[s:color_nr()]
+    echon '['
+    for i in [0, 1, 2]
+        if ['r', 'g', 'b'][i] == s:state['rgb']
+            echohl Macaw_ouput
+            echon current_rgb[i]
+            echohl NONE
+        else
+            echon current_rgb[i]
+        endif
+        if i < 2
+            echon ', '
+        endif
+    endfor
+    echon ']'
+endfunction
+
 function! macaw#transpose()
     if bufwinnr(s:state['buf_nr']) == -1
         return
@@ -136,6 +155,7 @@ function! macaw#cycle_rgb(dir)
     let new_rgb = (current + a:dir) % 3
     let s:state['rgb'] = ['r', 'g', 'b'][new_rgb]
     call s:redraw_status_line()
+    call s:echo_rgb()
 endfunction
 
 function! macaw#rgb(increment)
@@ -149,11 +169,12 @@ function! macaw#rgb(increment)
     let index_rgb = {'r': 0, 'g': 1, 'b': 2}[s:state['rgb']]
     let increment = v:count1 * a:increment
     while macaw#interpolate(color) == color_nr
-        let newcolor = (color[index_rgb] + increment) % 256
-        if newcolor < 0 | let newcolor += 256 | endif
+        let newcolor = color[index_rgb] + increment
+        if newcolor < 0 || newcolor > 255 | return | endif
         let color[index_rgb] = newcolor
     endwhile
     call s:highlight(macaw#interpolate(color))
+    call s:echo_rgb()
 endfunction
 
 function! macaw#increment_color(number)
@@ -196,7 +217,7 @@ nnoremap <silent> yc :call macaw#pick_color(synID(line('.'), col('.'), 1))<cr>
 
 " RGB functions {{{1
 function! s:x2d(hex)
-    return printf("%d", "0x".a:hex)
+    return printf("%d", "0x".a:hex) + 0
 endfunction
 
 function! s:color_rgb(color)
