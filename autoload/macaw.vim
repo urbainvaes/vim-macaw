@@ -176,11 +176,19 @@ function! s:open()
     exe split_command color_file
     let s:state['buf_nr'] = bufnr()
 
-    setlocal filetype=colors 
+    setlocal filetype=colors
     call s:set_buf_options()
 
     if !s:state['help_shown']
-        echom "Press 'g?' to show Macaw mappings"
+        echon "Press '"
+        echohl Special
+        echon "g?"
+        echohl NONE
+        echon "' to show mappings. The latest highlight command will be copied to register '"
+        echohl Special
+        echon "c"
+        echohl NONE
+        echon "'. Happy hacking!"
         let s:state['help_shown'] = 1
     endif
 endfunction
@@ -221,8 +229,8 @@ function! s:echo_rgb()
 endfunction
 
 function! s:set_buf_options()
-    setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted 
-                \ nowrap nomodifiable nocursorline nocursorcolumn 
+    setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted
+                \ nowrap nomodifiable nocursorline nocursorcolumn
                 \ nofoldenable sidescrolloff=0 noequalalways
 endfunction
 
@@ -296,7 +304,7 @@ function! macaw#help()
         resize 14
     endif
     exe "edit ".s:path."/macaw.mappings"
-    setlocal filetype=mappings 
+    setlocal filetype=mappings
     call s:set_buf_options()
     exe 'nmap <silent> <buffer> q :buffer #<cr>:bdelete #<cr>:'.winrestcmd.'<cr>'
     setlocal statusline=>\ Press\ 'q'\ to\ leave
