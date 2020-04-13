@@ -16,14 +16,46 @@ Macaw is a tool to interactively change colors in vim/nvim terminal.
 ==============================================================================
 USAGE                                                         *macaw-functions*
 
-Sometimes, it is nice to tweak
+Macaw aims to streamline the process of designing and tweaking vim
+colorschemes. The intended usage is as follows:
+
+1) Move the cursor to a character belonging to a syntax group of which you
+   would like to change the color.
+
+2) Press |yc| to open or focus the Macaw window.
+
+3) Change the color of the selected syntax group interactively.
+
+3) Repeat 1), 2) and 3) until you are satisfied with the changes.
+
+4) Use |:MacawWrite| in your `.vimrc` to save the highlight commands
+   corresponding to your changes.
+
+If you just want to tweak a few colors of your colorscheme, the |ColorScheme|
+autocommand is your friend. Just include the following code in your `.vimrc`,
+before the invocation the |colorscheme| command. >
+
+    function! MyHighlights()
+        HIGHLIGHT COMMANDS COME HERE
+    endfunction
+
+    augroup myHighlights
+        autocmd!
+        autocmd ColorScheme * call MyHighlights()
+    augroup END
+
+    " Example colorscheme
+    colorscheme seoul256
+<
+Saving your Macaw tweaks can then be achieved with the command |:MacawWrite|
+within MyHighlights().
 
 ==============================================================================
 FUNCTIONS                                                     *macaw-functions*
 
                                                                   *macaw#macaw*
 macaw#macaw([{syn_id} [, {fg_or_bg}]])
-    Open the *Macaw* window for the syntax group {syn_id}. The parameter
+    Open the Macaw window for the syntax group {syn_id}. The parameter
     {syn_id} can be either the integer ID of a syntax group or a string with
     the name of the syntax group. If unspecified, the syntax group of the
     character under the cursor is employed. To change the color of the status
@@ -61,8 +93,8 @@ MAPPINGS                                                      *macaw-mappings*
 
 Global~
 
-yc
-    Open *Macaw* with the syntax group under the cursor. Equivalent to >
+*yc*
+    Open Macaw with the syntax group under the cursor. Equivalent to >
        :call macaw#macaw()
        :Macaw
 
@@ -130,13 +162,13 @@ I
     syntax group of both 'vimNumber' and 'pythonNumber'; see |synIDtrans()| for
     more details on this.
 
-    When *Macaw* is called with the cursor on 1729 in 'test.vim', it assumes
+    When Macaw is called with the cursor on 1729 in 'test.vim', it assumes
     by default that the syntax group you want to tweak is 'Number', not
     'vimNumber': a change of color will apply to all the syntax groups that
     link to 'Number', which includes 'pythonNumber'.
 
     If you want to tweak the highlighting of only the 'vimNumber' syntax
-    group, just press *I* in the *Macaw* buffer.
+    group, just press *I* in the Macaw buffer.
 
 ==============================================================================
  vim:tw=78:ts=4:et:ft=help:norl:
