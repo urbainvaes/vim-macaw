@@ -5,7 +5,7 @@ colorschemes in *terminal* vim.
 It gives users the ability to change the foreground and background colors of syntax groups interactively,
 and to easily save the changes in order to make them persistent in future sessions.
 
-![](https://raw.github.com/urbainvaes/vim-macaw/demo/other.gif)
+![](https://raw.github.com/urbainvaes/vim-macaw/demo/demo.gif)
 
 ## Installation
 
