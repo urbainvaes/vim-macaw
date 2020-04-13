@@ -5,6 +5,7 @@
 
 B: Toggle foreground/background
 T: Toggle vertical/horizontal
+I: Toggle synID/translated synID
 
 <Right>: Cycle r->g->b->r
 <Left>: Cycle b->g->r->b

@@ -102,18 +102,28 @@ let s:default_command_horizontal = 'topleft 6 split'
 
 let s:path = expand("<sfile>:p:h")
 let s:tweaks = {}
+
 let s:state = {
             \ 'help_shown': 0,
             \ 'buf_nr': -1,
             \ 'transposed': 0,
             \ 'syn_id': '',
             \ 'fg_or_bg': 'fg',
+            \ 'id_or_eid': 'eid',
             \ 'rgb': 'r',
             \ }
 
 " Private functions {{{1
 function! s:syn_eid()
     return synIDtrans(s:state['syn_id'])
+endfunction
+
+function! s:syn_id_or_eid()
+    if s:state['id_or_eid'] == 'id'
+        return s:state['syn_id']
+    else
+        return s:syn_eid()
+    endif
 endfunction
 
 function! s:color_nr()
@@ -126,21 +136,21 @@ function! s:color_nr()
 endfunction
 
 function! s:highlight(color, ...)
-    let color_group = synIDattr(s:syn_eid(), 'name')
+    let color_group = synIDattr(s:syn_id_or_eid(), 'name')
     let command = "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
     if !has_key(s:tweaks, color_group)
         let s:tweaks[color_group] = {}
     endif
     let s:tweaks[color_group]['cterm'.s:state['fg_or_bg']] = a:color
-    echom s:tweaks
     if get(a:, 1, 1)
         call search('\<'.a:color.'\>', "w")
     endif
     exe command | let @h = macaw#write()
+    call s:echo_rgb()
 endfunction
 
 function! s:redraw_status_line()
-    let color_group = synIDattr(s:syn_eid(), 'name')
+    let color_group = synIDattr(s:syn_id_or_eid(), 'name')
     let rgb = s:state['rgb']
     let rgb_line = ((rgb == 'r') ? 'R' : 'r').((rgb == 'g') ? 'G' : 'g').((rgb == 'b') ? 'B' : 'b')
     exe 'setlocal statusline=>\ '.color_group.'/'.s:state['fg_or_bg'].'\ ['.rgb_line.']'
@@ -210,6 +220,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> <down> :<c-u>call <SID>rgb(-1)<cr>
     nnoremap <silent> <buffer> T :<c-u> call <SID>transpose()<cr>
     nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
+    nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>
     nnoremap <silent> <buffer> ! :call <SID>external()<cr>
     nnoremap <silent> <buffer> g? :call <SID>help()<cr>
     nnoremap <silent> <buffer> q :q!<cr>
@@ -274,7 +285,6 @@ function! s:rgb(increment)
         let color[index_rgb] = newcolor
     endwhile
     call s:highlight(s:approximate(color))
-    call s:echo_rgb()
 endfunction
 
 function! s:increment_color(number)
@@ -285,7 +295,6 @@ function! s:increment_color(number)
 endfunction
 
 function! s:set_color_at_cursor()
-    let color_group = synIDattr(s:syn_eid(), 'name')
     let cursor_syn_eid = synIDtrans(synID(line('.'), col('.'), 1))
     let cursor_color = synIDattr(cursor_syn_eid, 'bg')
     if cursor_color == ''
@@ -298,6 +307,11 @@ endfunction
 function! s:toggle_fg_bg()
     let s:state['fg_or_bg'] = s:state['fg_or_bg'] == 'fg' ? 'bg' : 'fg'
     call s:redraw()
+endfunction
+
+function! s:toggle_id_or_eid()
+    let s:state['id_or_eid'] = s:state['id_or_eid'] == 'id' ? 'eid' : 'id'
+    call s:redraw_status_line()
 endfunction
 
 function! s:help()
