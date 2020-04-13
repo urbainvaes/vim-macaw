@@ -8,13 +8,13 @@ OVERVIEW                                                               *macaw*
 
 Macaw is a tool to interactively change colors in vim/nvim terminal.
 
-    1. Usage ........... |macaw-usage|
-    2. Functions ....... |macaw-functions|
-    2. Commands ........ |macaw-commands|
-    3. Mappings ........ |macaw-mappings|
+    1. Usage ............... |macaw-usage|
+    2. Functions ........... |macaw-functions|
+    2. Commands ............ |macaw-commands|
+    3. Mappings ............ |macaw-mappings|
 
 ==============================================================================
-USAGE                                                         *macaw-functions*
+USAGE                                                            *macaw-usage*
 
 Macaw aims to streamline the process of designing and tweaking vim
 colorschemes. The intended usage is as follows:
@@ -49,6 +49,11 @@ before the invocation the |colorscheme| command. >
 <
 Saving your Macaw tweaks can then be achieved with the command |:MacawWrite|
 within MyHighlights().
+
+A small additional feature of Macaw is that it defines highlighting rules for
+color numbers in highlight commands. For examlple, the numbers 26 and 44 will
+be highlighted with the corresponding colors in the following command: >
+    highlight Comment ctermfg=26 ctermbg=44
 
 ==============================================================================
 FUNCTIONS                                                     *macaw-functions*
@@ -98,7 +103,7 @@ Global~
        :call macaw#macaw()
        :Macaw
 
-Buffer-local~
+Buffer-local (in the Macaw buffer)~
 
 g?
     Show this help.
