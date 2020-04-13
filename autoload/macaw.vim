@@ -101,6 +101,7 @@ let s:default_command_vertical = 'vert botright 23 split'
 let s:default_command_horizontal = 'topleft 6 split'
 
 let s:path = expand("<sfile>:p:h")
+let s:tweaks = {}
 let s:state = {
             \ 'help_shown': 0,
             \ 'buf_nr': -1,
@@ -127,10 +128,15 @@ endfunction
 function! s:highlight(color, ...)
     let color_group = synIDattr(s:syn_eid(), 'name')
     let command = "highlight ".color_group." cterm".s:state['fg_or_bg']."=".a:color
-    exe command | let @h = command
+    if !has_key(s:tweaks, color_group)
+        let s:tweaks[color_group] = {}
+    endif
+    let s:tweaks[color_group]['cterm'.s:state['fg_or_bg']] = a:color
+    echom s:tweaks
     if get(a:, 1, 1)
         call search('\<'.a:color.'\>', "w")
     endif
+    exe command | let @h = macaw#write()
 endfunction
 
 function! s:redraw_status_line()
@@ -347,4 +353,16 @@ function! macaw#macaw(...)
     endif
     let fg_or_bg = get(a:, 2, "fg")
     call s:pick_color(syn_id, fg_or_bg)
+endfunction
+
+function! macaw#write()
+    let output = ""
+    for [group, rules] in items(s:tweaks)
+        let output = output."highlight ".group
+        for [cterm_fgbg, color] in items(rules)
+            let output = output." ".cterm_fgbg."=".color
+        endfor
+        let output = output."\n"
+    endfor
+    return output
 endfunction
