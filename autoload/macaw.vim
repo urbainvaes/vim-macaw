@@ -195,18 +195,18 @@ function! s:open()
     setlocal filetype=colors
     call s:set_buf_options()
 
-    " if !s:state['help_shown']
+    if !s:state['help_shown']
         echon "Press '"
         echohl Special
         echon "g?"
         echohl NONE
-        echon "' to show mappings. The latest highlight command will be copied to register '"
+        echon "' to show mappings. The highlight commands will be copied to register '"
         echohl Special
         echon "h"
         echohl NONE
         echon "'. Happy hacking!"
         let s:state['help_shown'] = 1
-    " endif
+    endif
 endfunction
 
 function! s:map_keys()
@@ -278,9 +278,8 @@ function! s:rgb(increment)
     let color = s:colors[color_nr]
     let color = [s:x2d(color[1:2]), s:x2d(color[3:4]), s:x2d(color[5:6])]
     let index_rgb = {'r': 0, 'g': 1, 'b': 2}[s:state['rgb']]
-    let increment = v:count1 * a:increment
     while s:approximate(color) == color_nr
-        let newcolor = color[index_rgb] + increment
+        let newcolor = color[index_rgb] + a:increment
         if newcolor < 0 || newcolor > 255 | return | endif
         let color[index_rgb] = newcolor
     endwhile

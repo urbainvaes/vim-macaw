@@ -1,0 +1,98 @@
+*macaw.txt* Unchain your art
+
+Author:  Urbain Vaes <https://urbain.vaes.uk/>
+License: MIT
+
+==============================================================================
+OVERVIEW                                                               *macaw*
+
+Macaw is a tool to interactively change colors in vim/nvim terminal.
+
+    1. Usage ........... |macaw-usage|
+    2. Commands ........ |macaw-commands|
+    2. Functions ....... |macaw-functions|
+    3. Mappings ........ |macaw-mappings|
+
+==============================================================================
+MAPPINGS                                                      *macaw-mappings*
+
+Global~
+
+yc
+    Open *Macaw* with the syntax group under the cursor.
+
+Buffer-local~
+
+g?
+    Show this help.
+
+q 
+    Close the plugin window.
+
+[count]<c-a> 
+    Increment by [count] the number (0-255) of the color employed for the
+    selected syntax group.
+
+[count]<c-x>
+    Decrement by [count] the number (0-255) of the color employed for the
+    selected syntax group.
+
+<Left>
+    Cycle between red->blue->green->red. The currently selected color, which
+    is written in the status line of the plugin window, can then be modified
+    with <Up> and <Down>.
+
+<Right>
+    Cycle between red->green->blue->red.  The currently selected color, which
+    is written in the status line of the plugin window, can then be modified
+    with <Up> and <Down>.
+
+<Down>
+    Decrement either red, blue, or green.
+
+<Up>
+    Increment either red, blue, or green.
+
+!
+    This requires the program 'grabc' to be installed on your system.
+    It uses 'grabc' to fetch an external color, which is then approximated
+    using the terminal colors.
+B
+    Toggle between foreground and background. The current value value of this
+    parameter is written in the status line of the plugin window.
+
+T
+    Toggle between vertical and horizontal mode. To make either layout
+    persistent, change |g:macaw_orientation|.
+
+I
+    Toggle between synID and translated synID. To illustrate the use of this,
+    let us consider two text files that both contain only one line.
+
+    *test.vim* : >
+        let a = 1729
+<
+    *test.py* : >
+        a = 1729
+<
+    With default vim settings, the number 1729 in *test.vim* is in the syntax
+    group 'vimNumber', whereas the number 1729 in *test.py*  is in the syntax
+    group 'pythonNumber'.
+
+    Both of these groups link to the group 'Number', which means that the
+    highlight rules of the group Number are employed for highlighting
+    numbers in both files. The group 'Number' is said to be the translated
+    syntax group of both 'vimNumber' and 'pythonNumber'; see |synIDtrans()| for
+    more details on this.
+
+    When *Macaw* is called with the cursor on 1729 in 'test.vim', it assumes
+    by default that the syntax group you want to tweak is 'Number', not
+    'vimNumber': a change of color will apply to all the syntax groups that
+    link to 'Number', which includes 'pythonNumber'.
+
+    If you want to tweak the highlighting of only the 'vimNumber' syntax
+    group, just press *I* in the *Macaw* buffer.
+
+
+==============================================================================
+FUNCTIONS                                                     *macaw-functions*

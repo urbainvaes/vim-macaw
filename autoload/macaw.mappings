@@ -16,3 +16,5 @@ q: Close the window
 
 Requires 'grabc'
 !: Approximate external color
+
+More info: :help macaw-mappings
