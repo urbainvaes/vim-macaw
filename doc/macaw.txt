@@ -12,6 +12,7 @@ Macaw is a tool to interactively change colors in vim/nvim terminal.
     2. Functions ........... |macaw-functions|
     2. Commands ............ |macaw-commands|
     3. Mappings ............ |macaw-mappings|
+    3. Configuration ....... |macaw-config|
 
 ==============================================================================
 USAGE                                                            *macaw-usage*
@@ -70,7 +71,7 @@ macaw#macaw([{syn_id} [, {fg_or_bg}]])
     If specified, the parameter {fg_or_bg} must be either 'fg' or 'bg'. It
     determines whether the color changes should apply to the foreground color
     or the background color of the syntax group. If left unspecified, it
-    defaults to 'fg'. To change the background color of *gitgutter* signs, for
+    defaults to 'fg'. To change the background color of |gitgutter| signs, for
     example, you could run >
         :call macaw#macaw("GitGutterAdd", "bg")
 <
@@ -174,6 +175,23 @@ I
 
     If you want to tweak the highlighting of only the 'vimNumber' syntax
     group, just press *I* in the Macaw buffer.
+
+==============================================================================
+CONFIGURATION                                                    *macaw-config*
+
+*g:macaw_orientation*
+    The orientation of the Macaw window. Either 'vertical' or 'horizontal'.
+    Default: 'vertical'.
+
+*g:macaw_command_vertical*
+    The command to open the Macaw file, which contains the color numbers,
+    when the orientation is set to 'vertical'.
+    Default: 'vert botright 23 split'.
+
+*g:macaw_command_horizontal*
+    The command to open the Macaw file, which contains the color numbers,
+    when the orientation is set to 'horizontal'.
+    Default: 'topleft 6 split'.
 
 ==============================================================================
  vim:tw=78:ts=4:et:ft=help:norl:
