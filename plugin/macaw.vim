@@ -48,3 +48,4 @@ if empty(maparg('yc', 'n'))
 endif
 
 command! -nargs=* -complete=highlight Macaw call macaw#macaw(<q-args>)
+command! -nargs=0 MacawWrite :put =macaw#write()

@@ -9,9 +9,52 @@ OVERVIEW                                                               *macaw*
 Macaw is a tool to interactively change colors in vim/nvim terminal.
 
     1. Usage ........... |macaw-usage|
-    2. Commands ........ |macaw-commands|
     2. Functions ....... |macaw-functions|
+    2. Commands ........ |macaw-commands|
     3. Mappings ........ |macaw-mappings|
+
+==============================================================================
+USAGE                                                         *macaw-functions*
+
+Sometimes, it is nice to tweak
+
+==============================================================================
+FUNCTIONS                                                     *macaw-functions*
+
+                                                                  *macaw#macaw*
+macaw#macaw([{syn_id} [, {fg_or_bg}]])
+    Open the *Macaw* window for the syntax group {syn_id}. The parameter
+    {syn_id} can be either the integer ID of a syntax group or a string with
+    the name of the syntax group. If unspecified, the syntax group of the
+    character under the cursor is employed. To change the color of the status
+    line, for example, you can run >
+        :call macaw#macaw("Statusline")
+<
+    If specified, the parameter {fg_or_bg} must be either 'fg' or 'bg'. It
+    determines whether the color changes should apply to the foreground color
+    or the background color of the syntax group. If left unspecified, it
+    defaults to 'fg'. To change the background color of *gitgutter* signs, for
+    example, you could run >
+        :call macaw#macaw("GitGutterAdd", "bg")
+<
+                                                                  *macaw#write*
+macaw#write()
+    Return the highlight command of the current session. If you apply several
+    tweaks and want to save them in your `.vimrc`, for example, write >
+        :put =macaw#write()
+
+==============================================================================
+COMMANDS                                                       *macaw-commands*
+
+                                                                 *macaw-:Macaw*
+:Macaw [{syn_id} [{fg_or_bg}]]
+    Call |macaw#macaw()| with the parameters passed. The advantage of using
+    the command instead of the function is that completion is available for
+    the syntax group {syn_id}.
+
+                                                            *macaw-:MacawWrite*
+:MacawWrite
+    Call |macaw#write()| and write the result at the cursor position.
 
 ==============================================================================
 MAPPINGS                                                      *macaw-mappings*
@@ -19,17 +62,19 @@ MAPPINGS                                                      *macaw-mappings*
 Global~
 
 yc
-    Open *Macaw* with the syntax group under the cursor.
+    Open *Macaw* with the syntax group under the cursor. Equivalent to >
+       :call macaw#macaw()
+       :Macaw
 
 Buffer-local~
 
 g?
     Show this help.
 
-q 
+q
     Close the plugin window.
 
-[count]<c-a> 
+[count]<c-a>
     Increment by [count] the number (0-255) of the color employed for the
     selected syntax group.
 
@@ -93,6 +138,5 @@ I
     If you want to tweak the highlighting of only the 'vimNumber' syntax
     group, just press *I* in the *Macaw* buffer.
 
-
 ==============================================================================
-FUNCTIONS                                                     *macaw-functions*
+ vim:tw=78:ts=4:et:ft=help:norl:

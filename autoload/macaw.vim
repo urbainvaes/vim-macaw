@@ -358,6 +358,7 @@ function! s:pick_color(syn_id, fg_or_bg)
     call s:redraw()
 endfunction
 
+" Public functions {{{1
 function! macaw#macaw(...)
     if a:0 == 0 || a:1 == ""
         let syn_id = synID(line('.'), col('.'), 1)
