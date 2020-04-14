@@ -92,7 +92,7 @@ function! s:highlight_colors()
         let guifg = i > 15 ? " guifg=".g:macaw_colors[i] : ""
         let guibg = i > 15 ? " guibg=".g:macaw_colors[i] : ""
         exe "highlight zVimHiNmbrFg".i." ctermfg=".i.guifg
-        exe "highlight zVimHiNmbrBg".i." ctermfg=black ctermbg=".i.guifg
+        exe "highlight zVimHiNmbrBg".i." ctermfg=255 guibg=#eeeeee ctermbg=".i.guifg
     endfor
     for i in range(1, 255)
         let gui_color = i > 15 ? " guibg=".g:macaw_colors[i] : ""
