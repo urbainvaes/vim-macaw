@@ -65,6 +65,7 @@ function! s:syn_id_or_eid()
 endfunction
 
 function! s:color_nr()
+    " Alternative synIDattr(s:syn_eid(), s:state['fg_or_bg'], 'cterm')
     let color_nr = synIDattr(s:syn_eid(), s:state['fg_or_bg'])
     let color_nr = color_nr =~ "^#" ? s:approximate(color_nr) : color_nr
     if color_nr == ""
@@ -242,7 +243,7 @@ endfunction
 
 function! s:set_color_at_cursor()
     let cursor_syn_eid = synIDtrans(synID(line('.'), col('.'), 1))
-    let cursor_color = synIDattr(cursor_syn_eid, 'bg')
+    let cursor_color = synIDattr(cursor_syn_eid, 'bg', 'cterm')
     if cursor_color == ''
         echom "Click on a color..."
         return
@@ -296,7 +297,7 @@ endfunction
 
 function! s:pick_color(syn_id, fg_or_bg)
     let syn_id = type(a:syn_id) == 1 ? hlID(a:syn_id) : a:syn_id
-    if synIDattr(synIDtrans(syn_id), "name") == ""
+    if synIDattr(synIDtrans(syn_id), "name", "cterm") == ""
         call s:pick_color("Normal", "bg")
         return
     endif
