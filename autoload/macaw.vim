@@ -137,7 +137,7 @@ function! s:open()
     endif
 
     silent exe split_command color_file
-    let s:state['buf_nr'] = bufnr()
+    let s:state['buf_nr'] = bufnr('%')
 
     setlocal filetype=colors
     call s:set_buf_options()
