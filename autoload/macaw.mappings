@@ -2,6 +2,7 @@
 <2-leftmouse>: Same as <cr>
 <c-a>: Increment the color/256
 <c-x>: Decrement the color/256
+-: Select syntax group in list
 
 B: Toggle foreground/background
 T: Toggle vertical/horizontal

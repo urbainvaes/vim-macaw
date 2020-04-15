@@ -112,6 +112,11 @@ g?
 q
     Close the plugin window.
 
+-
+    Open a list with the main syntax groups. In the list window, press <cr> to
+    select the syntax group under the cursor, and *K* to open the associated
+    vim documentation.
+
 [count]<c-a>
     Increment by [count] the number (0-255) of the color employed for the
     selected syntax group.

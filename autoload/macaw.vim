@@ -41,6 +41,7 @@ let s:default_command_horizontal = 'topleft 6 split'
 let s:path = expand("<sfile>:p:h")
 let s:tweaks = {}
 
+" Should we reset fg_or_bg on group change?
 let s:state = {
             \ 'help_shown': 0,
             \ 'buf_nr': -1,
@@ -100,7 +101,7 @@ function! s:redraw_status_line()
     let color_group = synIDattr(s:syn_id_or_eid(), 'name')
     let rgb = s:state['rgb']
     let rgb_line = ((rgb == 'r') ? 'R' : 'r').((rgb == 'g') ? 'G' : 'g').((rgb == 'b') ? 'B' : 'b')
-    exe 'setlocal statusline=>\ '.color_group.'/'.s:state['fg_or_bg'].'\ ['.rgb_line.']'
+    exe 'setlocal statusline='.color_group.'/'.s:state['fg_or_bg'].'\ ['.rgb_line.']'
 endfunction
 
 function! s:redraw()
@@ -139,7 +140,7 @@ function! s:open()
     silent exe split_command color_file
     let s:state['buf_nr'] = bufnr('%')
 
-    setlocal filetype=colors
+    setlocal filetype=colors mouse=n
     call s:set_buf_options()
 
     if !s:state['help_shown']
@@ -169,6 +170,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
     nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>
     nnoremap <silent> <buffer> ! :call <SID>external()<cr>
+    nnoremap <silent> <buffer> - :call <SID>select_group()<cr>
     nnoremap <silent> <buffer> g? :call <SID>help()<cr>
     nnoremap <silent> <buffer> q :q!<cr>
 endfunction
@@ -274,7 +276,25 @@ function! s:help()
     setlocal filetype=mappings
     call s:set_buf_options()
     exe 'nmap <silent> <buffer> q :buffer #<cr>:bdelete #<cr>:'.winrestcmd.'<cr>'
-    setlocal statusline=>\ Press\ 'q'\ to\ leave
+    setlocal statusline=q:\ leave
+endfunction
+
+function! s:close_select_group(change_group)
+    let group = expand("<cword>")
+    buffer # | bdelete #
+    if a:change_group
+        let s:state.syn_id = hlID(group)
+        call s:redraw()
+    endif
+endfunction
+
+function! s:select_group()
+    exe "edit ".s:path."/core.syngroups"
+    call s:set_buf_options()
+    setlocal filetype=syngroups keywordprg=:help
+    setlocal statusline=<cr>:\ select,\ K:\ help
+    nnoremap <silent> <buffer> q :call <SID>close_select_group(0)<cr>
+    nnoremap <silent> <buffer> <cr> :call <SID>close_select_group(1)<cr>
 endfunction
 
 function! s:approximate(color)
