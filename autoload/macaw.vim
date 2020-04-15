@@ -87,7 +87,7 @@ function! s:highlight(color, ...)
     endif
     exe "highlight ".color_group." cterm".fg_or_bg."=".color
     let s:tweaks[color_group]['cterm'.fg_or_bg] = color
-    if color == "NONE" || color > 15
+    if string(color) == "NONE" || color > 15
         let gui_color = g:macaw_colors[color]
         let s:tweaks[color_group]['gui'.fg_or_bg] = gui_color
         exe "highlight ".color_group." gui".fg_or_bg."=".gui_color
