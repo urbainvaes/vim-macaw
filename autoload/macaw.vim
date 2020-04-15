@@ -31,7 +31,9 @@ endfunction
 
 let s:colors_rgb = {}
 for c in keys(g:macaw_colors)
-    let s:colors_rgb[c] = s:color_rgb(g:macaw_colors[c])
+    if c != "NONE"
+        let s:colors_rgb[c] = s:color_rgb(g:macaw_colors[c])
+    endif
 endfor
 
 let s:default_orientation = 'vertical'
@@ -85,7 +87,7 @@ function! s:highlight(color, ...)
     endif
     exe "highlight ".color_group." cterm".fg_or_bg."=".color
     let s:tweaks[color_group]['cterm'.fg_or_bg] = color
-    if color > 15
+    if color == "NONE" || color > 15
         let gui_color = g:macaw_colors[color]
         let s:tweaks[color_group]['gui'.fg_or_bg] = gui_color
         exe "highlight ".color_group." gui".fg_or_bg."=".gui_color
@@ -166,6 +168,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> <left> :<c-u>call <SID>cycle_rgb(-1)<cr>
     nnoremap <silent> <buffer> <up> :<c-u>call <SID>rgb(1)<cr>
     nnoremap <silent> <buffer> <down> :<c-u>call <SID>rgb(-1)<cr>
+    nnoremap <silent> <buffer> <bs> :<c-u>call <SID>highlight("NONE", 0)<cr>
     nnoremap <silent> <buffer> T :<c-u> call <SID>transpose()<cr>
     nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
     nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>

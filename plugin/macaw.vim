@@ -25,7 +25,7 @@ if exists('g:loaded_macaw') || &compatible
 endif
 let g:loaded_macaw = 1
 
-let g:macaw_colors = {
+let g:macaw_colors = { 'NONE': 'NONE',
         \  16:  '#000000',  17: '#00005f',  18: '#000087',  19: '#0000af',
         \  20:  '#0000d7',  21: '#0000ff',  22: '#005f00',  23: '#005f5f',
         \  24:  '#005f87',  25: '#005faf',  26: '#005fd7',  27: '#005fff',
@@ -88,13 +88,13 @@ let g:macaw_colors = {
         \  252: '#d0d0d0', 253: '#dadada', 254: '#e4e4e4', 255: '#eeeeee' }
 
 function! s:highlight_colors()
-    for i in range(1, 255)
+    for i in range(0, 255)
         let guifg = i > 15 ? " guifg=".g:macaw_colors[i] : ""
         let guibg = i > 15 ? " guibg=".g:macaw_colors[i] : ""
         exe "highlight zVimHiNmbrFg".i." ctermfg=".i.guifg
         exe "highlight zVimHiNmbrBg".i." ctermfg=255 guibg=#eeeeee ctermbg=".i.guifg
     endfor
-    for i in range(1, 255)
+    for i in range(0, 255)
         let gui_color = i > 15 ? " guibg=".g:macaw_colors[i] : ""
         exe "highlight zColor".i." ctermbg=".i.gui_color
     endfor

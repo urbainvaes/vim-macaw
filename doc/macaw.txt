@@ -117,6 +117,9 @@ q
     select the syntax group under the cursor, and *K* to open the associated
     vim documentation.
 
+<bs>
+    Clear the highlighting of the current syntax group.
+
 [count]<c-a>
     Increment by [count] the number (0-255) of the color employed for the
     selected syntax group.
