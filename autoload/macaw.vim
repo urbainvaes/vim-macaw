@@ -358,6 +358,9 @@ function! macaw#rotate()
     for group in g:macaw_groups
         let syn_id = hlID(group)
         let syn_eid = synIDtrans(syn_id)
+        if syn_id != syn_eid
+            continue
+        endif
         " cterm
         let fg_nr = synIDattr(syn_eid, 'fg')
         let bg_nr = synIDattr(syn_eid, 'bg')
