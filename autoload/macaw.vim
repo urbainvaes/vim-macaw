@@ -352,3 +352,35 @@ function! macaw#write()
     endfor
     return output
 endfunction
+
+function! macaw#rotate()
+    let s:tweaks = {} | let @h = ""
+    for group in g:macaw_groups
+        let syn_id = hlID(group)
+        let syn_eid = synIDtrans(syn_id)
+        " cterm
+        let fg_nr = synIDattr(syn_eid, 'fg')
+        let bg_nr = synIDattr(syn_eid, 'bg')
+        if has_key(s:colors_rgb, fg_nr)
+            let fg = s:colors_rgb[fg_nr]
+            let newfg = s:approximate([fg[1], fg[2], fg[0]])
+            exe "highlight ".group." ctermfg=".newfg
+        endif
+        if has_key(s:colors_rgb, bg_nr)
+            let bg = s:colors_rgb[bg_nr]
+            let newbg = s:approximate([bg[1], bg[2], bg[0]])
+            exe "highlight ".group." ctermbg=".newbg
+        endif
+        " Gui
+        if fg_nr =~ "^#"
+            let fg = s:color_rgb(fg_nr)
+            let newfg = printf("#%02x%02x%02x", fg[1], fg[2], fg[0])
+            exe "highlight ".group." guifg=".newfg
+        endif
+        if bg_nr =~ "^#"
+            let bg = s:color_rgb(bg_nr)
+            let newbg = printf("#%02x%02x%02x", bg[1], bg[2], bg[0])
+            exe "highlight ".group." guibg=".newbg
+        endif
+    endfor
+endfunction

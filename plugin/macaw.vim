@@ -25,6 +25,25 @@ if exists('g:loaded_macaw') || &compatible
 endif
 let g:loaded_macaw = 1
 
+let g:macaw_groups = ["Boolean", "Character", "ColorColumn", "Comment",
+            \ "Conditional", "Constant", "CursorLine", "CursorLineNr",
+            \ "Debug", "Define", "Delimiter", "DiffAdd",
+            \ "DiffChange", "DiffDelete", "DiffText", "Error",
+            \ "ErrorMsg", "Exception", "Float", "FoldColumn",
+            \ "Folded", "Function", "Identifier", "Ignore",
+            \ "IncSearch", "Include", "Keyword", "Label",
+            \ "LineNr", "Macro", "MatchParen", "ModeMsg",
+            \ "NonText", "Normal", "Number", "Operator", "Pmenu",
+            \ "PmenuSbar", "PmenuSel", "PmenuThumb", "PreCondit",
+            \ "PreProc", "Repeat", "Search", "SignColumn",
+            \ "Special", "SpecialChar", "SpecialComment", "SpellBad",
+            \ "SpellCap", "SpellLocal", "SpellRare", "Statement",
+            \ "StatusLine", "StatusLineNC", "StatusLineTerm", "StatusLineTermNC",
+            \ "StorageClass", "String", "Structure", "TabLine",
+            \ "TabLineFill", "TabLineSel", "Tag", "Todo",
+            \ "Type", "Typedef", "Underlined", "VertSplit",
+            \ "Visual", "WildMenu"]
+
 let g:macaw_colors = { 'NONE': 'NONE',
         \  16:  '#000000',  17: '#00005f',  18: '#000087',  19: '#0000af',
         \  20:  '#0000d7',  21: '#0000ff',  22: '#005f00',  23: '#005f5f',

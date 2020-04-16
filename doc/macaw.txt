@@ -81,6 +81,11 @@ macaw#write()
     tweaks and want to save them in your `.vimrc`, for example, write >
         :put =macaw#write()
 
+                                                                 *macaw#rotate*
+macaw#rotate()
+    Rotate the colors of the current colorscheme, in RGB space. This erases any
+    previously saved tweaks.
+
 ==============================================================================
 COMMANDS                                                       *macaw-commands*
 
