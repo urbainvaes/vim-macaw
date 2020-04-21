@@ -131,5 +131,5 @@ if empty(maparg('yc', 'n'))
     nnoremap <silent> yc :call macaw#macaw()<cr>
 endif
 
-command! -nargs=* -complete=highlight Macaw call macaw#macaw(<q-args>)
+command! -nargs=* -complete=highlight Macaw call macaw#macaw(<f-args>)
 command! -nargs=0 MacawWrite :put =macaw#write()
