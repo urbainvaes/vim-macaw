@@ -175,7 +175,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>
     nnoremap <silent> <buffer> ! :call <SID>external()<cr>
     nnoremap <silent> <buffer> - :call <SID>select_group()<cr>
-    nnoremap <silent> <buffer> g? :call <SID>help()<cr>
+    nnoremap <silent> <buffer> g? :help macaw-mappings<cr>
     nnoremap <silent> <buffer> q :q!<cr>
 endfunction
 
