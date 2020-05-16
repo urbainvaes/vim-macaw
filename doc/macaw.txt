@@ -29,12 +29,12 @@ colorschemes. The intended usage is as follows:
 
 3) Repeat 1), 2) and 3) until you are satisfied with the changes.
 
-4) Use |:MacawWrite| in your `.vimrc` to save the highlight commands
-   corresponding to your changes.
+4) Use |:MacawWrite| in your colorscheme file or `.vimrc` to save the
+   highlight commands corresponding to your changes.
 
 If you just want to tweak a few colors of your colorscheme, the |ColorScheme|
-autocommand is your friend. Just include the following code in your `.vimrc`,
-before the invocation the |colorscheme| command. >
+autocommand comes in handy. Just include the following code in your `.vimrc`,
+before the invocation of the |colorscheme| command. >
 
     function! MyHighlights()
         HIGHLIGHT COMMANDS COME HERE
@@ -53,7 +53,8 @@ within MyHighlights().
 
 A small additional feature of Macaw is that it defines highlighting rules for
 color numbers in highlight commands. For examlple, the numbers 26 and 44 will
-be highlighted with the corresponding colors in the following command: >
+be highlighted with the corresponding colors if the following line appears in
+a vim file: >
     highlight Comment ctermfg=26 ctermbg=44
 
 ==============================================================================
@@ -77,8 +78,8 @@ macaw#macaw([{syn_id} [, {fg_or_bg}]])
 <
                                                                   *macaw#write*
 macaw#write()
-    Return the highlight command of the current session. If you apply several
-    tweaks and want to save them in your `.vimrc`, for example, write >
+    Return the highlight command of the current Macaw session. If you apply
+    several tweaks and want to save them in your `.vimrc`, for example, write >
         :put =macaw#write()
 
                                                                  *macaw#rotate*
@@ -92,7 +93,7 @@ COMMANDS                                                       *macaw-commands*
                                                                  *macaw-:Macaw*
 :Macaw [{syn_id} [{fg_or_bg}]]
     Call |macaw#macaw()| with the parameters passed. The advantage of using
-    the command instead of the function is that completion is available for
+    this command instead of the function is that completion is available for
     the syntax group {syn_id}.
 
                                                             *macaw-:MacawWrite*
@@ -105,7 +106,7 @@ MAPPINGS                                                      *macaw-mappings*
 Global~
 
 *yc*
-    Open Macaw with the syntax group under the cursor. Equivalent to >
+    Open Macaw with the syntax group under the cursor. This is equivalent to >
        :call macaw#macaw()
        :Macaw
 
@@ -156,6 +157,9 @@ q
 B
     Toggle between foreground and background. The current value value of this
     parameter is written in the status line of the plugin window.
+
+R
+    Rotate the RGB values for the current syntax group.
 
 T
     Toggle between vertical and horizontal mode. To make either layout

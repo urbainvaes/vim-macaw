@@ -173,6 +173,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> T :<c-u> call <SID>transpose()<cr>
     nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
     nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>
+    nnoremap <silent> <buffer> R :<c-u>call <SID>rotate_rgb()<cr>
     nnoremap <silent> <buffer> ! :call <SID>external()<cr>
     nnoremap <silent> <buffer> - :call <SID>select_group()<cr>
     nnoremap <silent> <buffer> g? :help macaw-mappings<cr>
@@ -221,6 +222,18 @@ function! s:cycle_rgb(dir)
     let s:state['rgb'] = ['r', 'g', 'b'][new_rgb]
     call s:redraw_status_line()
     call s:echo_rgb()
+endfunction
+
+function! s:rotate_rgb()
+    let color_nr = s:color_nr()
+    if !has_key(s:colors_rgb, color_nr)
+        " This should not happen
+        echom "Macaw: unknown color number…"
+        return
+    endif
+    let color = s:colors_rgb[color_nr]
+    let new_color = s:approximate([color[1], color[2], color[0]])
+    call s:highlight(new_color)
 endfunction
 
 function! s:rgb(increment)
