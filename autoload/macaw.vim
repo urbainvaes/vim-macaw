@@ -174,6 +174,7 @@ function! s:map_keys()
     nnoremap <silent> <buffer> B :<c-u>call <SID>toggle_fg_bg()<cr>
     nnoremap <silent> <buffer> I :<c-u>call <SID>toggle_id_or_eid()<cr>
     nnoremap <silent> <buffer> R :<c-u>call <SID>rotate_rgb()<cr>
+    nnoremap <silent> <buffer> C :<c-u>call <SID>complement_rgb()<cr>
     nnoremap <silent> <buffer> ! :call <SID>external()<cr>
     nnoremap <silent> <buffer> - :call <SID>select_group()<cr>
     nnoremap <silent> <buffer> g? :help macaw-mappings<cr>
@@ -233,6 +234,19 @@ function! s:rotate_rgb()
     endif
     let color = s:colors_rgb[color_nr]
     let new_color = s:approximate([color[1], color[2], color[0]])
+    call s:highlight(new_color)
+endfunction
+
+function! s:complement_rgb()
+    let color_nr = s:color_nr()
+    if !has_key(s:colors_rgb, color_nr)
+        " This should not happen
+        echom "Macaw: unknown color number…"
+        return
+    endif
+    let color = s:colors_rgb[color_nr]
+    let [m, M] = [min(color), max(color)]
+    let new_color = s:approximate([m + M - color[0], m + M - color[1], m + M - color[2]])
     call s:highlight(new_color)
 endfunction
 
