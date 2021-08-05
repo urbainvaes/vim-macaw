@@ -360,7 +360,17 @@ endfunction
 " Public functions {{{1
 function! macaw#macaw(...)
     if a:0 == 0 || a:1 == ""
-        let syn_id = synID(line('.'), col('.'), 1)
+        let treesitter_groups = []
+        if &runtimepath =~ "treesitter" && &runtimepath =~ "playground"
+            let treesitter_groups = luaeval("require'nvim-treesitter-playground.hl-info'.get_treesitter_hl()")
+        end
+        if len(treesitter_groups) > 0
+            let group = treesitter_groups[-1]
+            let hl_group = matchstr(group, '\*\*\zs[^*]\+\ze\*\*$')
+            let syn_id = hlID(hl_group)
+        else
+            let syn_id = synID(line('.'), col('.'), 1)
+        endif
     else
         let syn_id = a:1
     endif
