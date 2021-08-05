@@ -68,3 +68,7 @@ Underlined
 VertSplit
 Visual
 WildMenu
+LspDiagnosticsDefaultError
+LspDiagnosticsDefaultWarning
+LspDiagnosticsDefaultInformation
+LspDiagnosticsDefaultHint

@@ -44,6 +44,13 @@ let g:macaw_groups = ["Boolean", "Character", "ColorColumn", "Comment",
             \ "Type", "Typedef", "Underlined", "VertSplit",
             \ "Visual", "WildMenu"]
 
+if has("nvim")
+    let g:macaw_groups = g:macaw_groups + [
+                \ "LspDiagnosticsDefaultError", "LspDiagnosticsDefaultWarning",
+                \ "LspDiagnosticsDefaultInformation", "LspDiagnosticsDefaultHint"
+                \ ]
+end
+
 let g:macaw_colors = { 'NONE': 'NONE',
         \  16:  '#000000',  17: '#00005f',  18: '#000087',  19: '#0000af',
         \  20:  '#0000d7',  21: '#0000ff',  22: '#005f00',  23: '#005f5f',
