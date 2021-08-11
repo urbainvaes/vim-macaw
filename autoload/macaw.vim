@@ -203,6 +203,8 @@ function! s:echo_rgb()
 endfunction
 
 function! s:set_buf_options()
+    " FIXME: The option noequalalways is global and persits. It should be
+    " reset upon closing the window.
     setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted
                 \ nowrap nomodifiable nocursorline nocursorcolumn
                 \ nofoldenable sidescrolloff=0 noequalalways noswapfile
