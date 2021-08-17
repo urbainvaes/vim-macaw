@@ -142,7 +142,6 @@ function! s:open()
 
     silent exe split_command color_file
     let s:state['buf_nr'] = bufnr('%')
-
     setlocal filetype=colors mouse=n
     call s:set_buf_options()
 
@@ -207,7 +206,7 @@ function! s:set_buf_options()
     " reset upon closing the window.
     setlocal nonumber nospell buftype=nofile bufhidden=hide nobuflisted
                 \ nowrap nomodifiable nocursorline nocursorcolumn
-                \ nofoldenable sidescrolloff=0 noequalalways noswapfile
+                \ nofoldenable sidescrolloff=0 noswapfile
 endfunction
 
 function! s:transpose()
